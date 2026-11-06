@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Untuk Puput, yang Selalu Berharga 🌙✨</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Fredoka', 'sans-serif'],
+            body: ['Nunito', 'sans-serif'],
+            serifText: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            night: {
+              950: '#0C0B18',
+              900: '#141224',
+              800: '#1E1A36',
+              700: '#2A234A',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: radial-gradient(circle at 50% 8%, #2A234A 0%, #161329 45%, #0C0B18 100%);
+      color: #E2E8F0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    /* Efek Canvas Partikel */
+    #particleCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Bintang Berkelap-kelip */
+    .star-bg {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pulseTwinkle var(--twinkle-dur, 3s) infinite ease-in-out;
+    }
+
+    @keyframes pulseTwinkle {
+      0%, 100% { opacity: 0.15; transform: scale(0.7); }
+      50% { opacity: 0.9; transform: scale(1.3); }
+    }
+
+    /* Efek Sentuhan Kilau Layar */
+    .touch-sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      animation: floatSparkle 0.85s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+    }
+
+    @keyframes floatSparkle {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.6) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -90px) scale(1.4) rotate(35deg);
+      }
+    }
+
+    /* Maskot Melayang */
+    .bunny-float {
+      animation: bunnyHover 4s ease-in-out infinite;
+    }
+    @keyframes bunnyHover {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    /* Napas Sejenak */
+    .breath-anim {
+      animation: breathingPulse 12s ease-in-out infinite;
+    }
+    @keyframes breathingPulse {
+      0%, 100% { transform: scale(0.88); box-shadow: 0 0 15px rgba(244, 114, 182, 0.2); }
+      33% { transform: scale(1.2); box-shadow: 0 0 35px rgba(216, 180, 254, 0.45); }
+      66% { transform: scale(1.2); box-shadow: 0 0 25px rgba(167, 139, 250, 0.35); }
+    }
+
+    /* Animasi Pop Kartu Pujian */
+    .pop-in {
+      animation: bouncePop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes bouncePop {
+      0% { opacity: 0; transform: scale(0.8) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Goyang Saat Overload Meteran */
+    .shake-alarm {
+      animation: shakeMeter 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    @keyframes shakeMeter {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    /* Efek Berpendar Cantik */
+    .glow-rose {
+      box-shadow: 0 0 25px rgba(244, 114, 182, 0.35);
+    }
+    .glow-gold {
+      box-shadow: 0 0 25px rgba(251, 191, 36, 0.35);
+    }
+  </style>
+</head>
+
+<body class="relative flex flex-col items-center justify-start min-h-screen px-3 sm:px-4 py-4 sm:py-6">
+
+  <!-- Canvas Partikel Hujan Bunga & Hati -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Latar Belakang Bintang Statis -->
+  <div id="starField" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+  <!-- CONTAINER UTAMA -->
+  <div class="w-full max-w-md relative z-10 flex flex-col gap-4 pb-16">
+
+    <!-- HEADER: Status & Tombol Musik -->
+    <header class="w-full flex justify-between items-center mb-1 z-40">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-pink-400 animate-ping"></span>
+        <span class="text-[11px] font-semibold tracking-wider text-purple-200 uppercase">Spesial Buat Puput</span>
+      </div>
+
+      <!-- Tombol Audio Kotak Kaca -->
+      <button id="btnMusic" onclick="toggleMusic()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 backdrop-blur-md border border-white/20 shadow-md text-xs font-semibold text-pink-200 transition">
+        <span id="musicIcon" class="text-sm">🎵</span>
+        <span id="musicStatusText">Kotak Kaca</span>
+      </button>
+    </header>
+
+    <!-- NAVIGATION TABS (MENU MULTI-TAB) -->
+    <nav class="w-full bg-white/10 backdrop-blur-lg border border-white/15 p-1.5 rounded-2xl flex items-center justify-between shadow-xl">
+      <button id="tabBtn1" onclick="switchTab('letterTab')" class="flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg">
+        <span>🌙</span>
+        <span>Ruang Tenang & Surat</span>
+      </button>
+
+      <button id="tabBtn2" onclick="switchTab('beautyTab')" class="flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 text-purple-200 hover:text-white hover:bg-white/5 relative">
+        <span class="animate-bounce">✨</span>
+        <span>Puput Cantik Banget!</span>
+        <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-400 rounded-full animate-ping"></span>
+      </button>
+    </nav>
+
+    <!-- ======================================================== -->
+    <!-- TAB 1: RUANG TENANG & SURAT TULUS (SINCERE APOLOGY & CARE) -->
+    <!-- ======================================================== -->
+    <div id="letterTab" class="w-full flex flex-col gap-6">
+
+      <!-- Hero Kelinci Damai -->
+      <section class="text-center flex flex-col items-center pt-2">
+        <div class="relative w-24 h-24 flex items-center justify-center bunny-float mb-1">
+          <svg class="w-20 h-20 drop-shadow-[0_0_20px_rgba(253,224,71,0.3)]" viewBox="0 0 120 120" fill="none">
+            <path d="M 86 18 A 42 42 0 0 0 44 96 A 36 36 0 0 1 86 18 Z" fill="#FDE047" fill-opacity="0.9" />
+            <circle cx="89" cy="22" r="2" fill="#FFFBEB" />
+            <circle cx="94" cy="46" r="1.5" fill="#FFFBEB" />
+            
+            <ellipse cx="48" cy="44" rx="4.5" ry="16" fill="#F8FAFC" transform="rotate(-12 48 44)"/>
+            <ellipse cx="62" cy="44" rx="4.5" ry="16" fill="#F8FAFC" transform="rotate(12 62 44)"/>
+            <ellipse cx="48" cy="44" rx="2.5" ry="10" fill="#F472B6" opacity="0.65" transform="rotate(-12 48 44)"/>
+            <ellipse cx="62" cy="44" rx="2.5" ry="10" fill="#F472B6" opacity="0.65" transform="rotate(12 62 44)"/>
+            <ellipse cx="55" cy="74" rx="20" ry="17" fill="#F8FAFC"/>
+            <ellipse cx="45" cy="78" rx="3.5" ry="2" fill="#F472B6" opacity="0.6"/>
+            <ellipse cx="65" cy="78" rx="3.5" ry="2" fill="#F472B6" opacity="0.6"/>
+            <path d="M 47 72 Q 51 75 54 72" stroke="#475569" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M 57 72 Q 60 75 63 72" stroke="#475569" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="55" cy="75" r="1.2" fill="#EC4899"/>
+            <path d="M 55 81 C 52 77 48 80 50 84 C 52 87 55 89 55 89 C 55 89 58 87 60 84 C 62 80 58 77 55 81 Z" fill="#F43F5E" opacity="0.9"/>
+          </svg>
+        </div>
+
+        <span class="text-[11px] uppercase tracking-widest text-purple-300 font-semibold">
+          Bukan buat maksa, cuma mau kamu tenang
+        </span>
+        <h1 class="font-heading text-2xl font-bold text-pink-100 tracking-tight mt-0.5">
+          Untuk Puput, yang Selalu Berharga 🌙
+        </h1>
+        <p class="text-xs text-purple-200/80 max-w-xs mt-1 leading-relaxed">
+          Gak ada yang nuntut kamu buru-buru balas. Duduk sebentar di sini ya kalau kepalamu lagi capek.
+        </p>
+      </section>
+
+      <!-- AMPLOP SURAT UTAMA -->
+      <section class="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold text-purple-200 uppercase tracking-wider flex items-center gap-1.5">
+            <span>💌</span> Surat Kejujuran Buat Kamu
+          </span>
+          <span class="text-[11px] text-pink-300/80 italic">Sentuh untuk buka</span>
+        </div>
+
+        <div id="envelopeCard" onclick="toggleLetter()" class="cursor-pointer group relative w-full bg-gradient-to-b from-purple-950/50 to-pink-950/40 rounded-2xl border border-pink-300/30 p-5 text-center transition-all duration-300 hover:border-pink-300/60 active:scale-[0.98]">
+          <div id="envelopeClosedView" class="space-y-2">
+            <div class="text-4xl filter drop-shadow transition-transform duration-300 group-hover:scale-110">
+              ✉️
+            </div>
+            <p class="text-xs font-bold text-pink-200 uppercase tracking-widest font-heading">
+              Buka Surat Ini
+            </p>
+            <p class="text-[11px] text-slate-300/70">
+              Sebuah pengakuan jujur dan rasa terima kasih yang tulus
+            </p>
+          </div>
+
+          <div id="envelopeOpenView" class="hidden text-xs text-pink-300 font-semibold flex items-center justify-center gap-1">
+            <span>▲</span> Lipat kembali surat
+          </div>
+        </div>
+
+        <!-- Isi Surat -->
+        <div id="letterBody" class="hidden mt-4 bg-[#FFFDFB] text-slate-800 rounded-2xl p-5 shadow-xl border-2 border-pink-200/90 space-y-3.5">
+          <div class="flex items-center justify-between border-b border-gray-200/80 pb-2.5">
+            <span class="font-serifText italic text-xs text-gray-500">Di malam yang tenang...</span>
+            <span class="text-xs font-bold text-pink-600 bg-pink-50 px-2.5 py-0.5 rounded-full">Buat Puput 🌸</span>
+          </div>
+
+          <div class="text-xs sm:text-[13px] leading-relaxed text-gray-700 space-y-3 font-body">
+            <p>
+              Hai Put... Maaf ya buat hari-hari kemarin. Rasanya sepi dan gak enak banget di hati kita diem-dieman dari hari Selasa kemarin.
+            </p>
+            <p>
+              Hal pertama yang paling pengen aku bilang ke kamu: <strong>kamu sama sekali gak salah, dan kamu gak pernah kurang sedikit pun.</strong> Kalau kemarin-kemarin aku yang selalu mulai bikin masalah, bikin suasana jadi tegang, dan ujungnya bikin kamu nangis... aku minta maaf sedalam-dalamnya ya Put.
+            </p>
+            
+            <!-- PESAN PERMINTAAN MAAF UTAMA -->
+            <div class="bg-purple-50 p-3.5 rounded-xl border-l-4 border-purple-400 text-gray-800 font-medium leading-relaxed shadow-sm">
+              "Aku minta maaf ya sama sikap aku ini... Aku belum bisa jadi yang terbaik buat kamu, mau itu di saat kita temenan atau pacaran. Tapi yang paling tulus dari dalam hatiku: aku selalu berharap kamu selalu bahagia ya, Put."
+            </div>
+
+            <p>
+              Aku sadar, ketakutanku kemarin itu murni karena rasa gak percaya diri di kepalaku sendiri. Aku takut gak cukup baik buat kamu, dan jarak LDR ini kadang bikin kepalaku overthinking sendirian. Padahal usahamu selama ini buat terus bertahan dan peduli sama aku itu luar biasa banget.
+            </p>
+            
+            <div class="bg-pink-50 p-3 rounded-xl border-l-4 border-pink-400 text-gray-800 font-medium">
+              "Di mataku, kamu sudah sempurna. Kamu sudah jadi yang terbaik dan lebih dari cukup. Usaha kamu selama ini gak ada yang sia-sia, dan aku bener-bener bersyukur punya kamu."
+            </div>
+
+            <p>
+              Web ini gak bermaksud nuntut kamu harus langsung bersikap biasa aja atau buru-buru balas. Ambil waktu sebanyak yang kamu butuhkan ya Put. Aku cuma mau kamu tidur nyenyak malam ini tanpa ada rasa bersalah di pundakmu.
+            </p>
+            <div class="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-pink-700 font-semibold">
+              <span>Jangan lupa makan ya, jaga kesehatanmu selalu 🤍</span>
+              <span class="text-base">🐰</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 KARTU ALASAN BERHARGA -->
+      <section class="space-y-2.5">
+        <div class="text-center">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-pink-200 font-heading">
+            Kenapa Kamu Begitu Berharga Buat Aku 🌸
+          </h2>
+          <p class="text-[11px] text-purple-200/70">Sentuh kartu untuk membaca:</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div onclick="toggleReason(1)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] backdrop-blur-sm border border-white/10 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🌸</span>
+              <h3 class="text-xs font-bold text-pink-200">Kesabaranmu yang Luar Biasa</h3>
+            </div>
+            <p id="reasonText1" class="hidden text-[11px] text-slate-200 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Kamu selalu punya hati yang lapang buat ngadepin kepalaku yang sering overthinking. Nggak semua orang bisa sesabar dan setulus kamu ke aku.
+            </p>
+          </div>
+
+          <div onclick="toggleReason(2)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] backdrop-blur-sm border border-white/10 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">✈️</span>
+              <h3 class="text-xs font-bold text-purple-200">Usahamu Menjaga LDR Kita</h3>
+            </div>
+            <p id="reasonText2" class="hidden text-[11px] text-slate-200 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Jarak itu berat, tapi kamu selalu nyempetin waktu buat ngabarin, dengerin ceritaku, dan bikin jarak jauh ini terasa tetap dekat dan hangat.
+            </p>
+          </div>
+
+          <div onclick="toggleReason(3)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] backdrop-blur-sm border border-white/10 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🤍</span>
+              <h3 class="text-xs font-bold text-amber-200">Ketulusan Hati Kamu</h3>
+            </div>
+            <p id="reasonText3" class="hidden text-[11px] text-slate-200 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Perhatianmu ke hal-hal kecil dan caramu memperlakukan aku dengan tulus adalah hal paling berharga yang selalu bikin aku tersentuh.
+            </p>
+          </div>
+
+          <div onclick="toggleReason(4)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] backdrop-blur-sm border border-white/10 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">✨</span>
+              <h3 class="text-xs font-bold text-emerald-200">Kamu Sudah Jadi yang Terbaik</h3>
+            </div>
+            <p id="reasonText4" class="hidden text-[11px] text-slate-200 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Jangan pernah ngerasa kamu kurang ya Put. Kamu udah sangat sempurna dengan segala caramu, dan kamu adalah orang terbaik yang ada di sampingku.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- WIDGET NAPAS SEJENAK -->
+      <section class="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-5 shadow-xl text-center">
+        <div class="flex items-center justify-center gap-1.5 text-xs font-semibold text-purple-200 uppercase tracking-wider mb-1">
+          <span>🫧</span> Ruang Napas Sejenak
+        </div>
+        <p class="text-[11px] text-slate-300/80 mb-3 max-w-xs mx-auto">
+          Tarik napas dan hembuskan pelan-pelan ya Put. Biarkan beban di kepalamu reda sejenak.
+        </p>
+
+        <div class="flex flex-col items-center justify-center my-1">
+          <div class="w-28 h-28 rounded-full bg-gradient-to-tr from-pink-500/25 via-purple-500/20 to-indigo-500/30 border-2 border-purple-300/40 flex items-center justify-center breath-anim relative">
+            <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
+              <span id="breathMainWord" class="font-heading text-xs font-bold text-pink-200">
+                Tarik Napas
+              </span>
+            </div>
+          </div>
+          <span id="breathSubWord" class="text-[11px] text-purple-200/80 mt-2.5 italic">
+            Tarik napas perlahan lewat hidung...
+          </span>
+        </div>
+      </section>
+
+      <!-- KARTU "BUKA SAAT..." -->
+      <section class="space-y-2">
+        <div class="text-center mb-1">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-purple-300 font-heading">
+            Buka Saat Perasaanmu... 🌙
+          </h2>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+          <button onclick="toggleCard('card1', 'icon1')" class="w-full p-3.5 flex items-center justify-between text-left text-xs font-semibold text-pink-200 active:bg-white/10">
+            <span class="flex items-center gap-2">
+              <span>🌧️</span>
+              <span>Buka kalau kamu masih kecewa & kesel sama aku</span>
+            </span>
+            <span id="icon1" class="text-purple-300 text-xs">▼</span>
+          </button>
+          <div id="card1" class="hidden px-4 pb-4 text-xs text-slate-200/90 leading-relaxed border-t border-white/5 pt-2">
+            Rasa kecewamu itu 100% beralasan, Put. Aku gak akan membela diri, karena aku yang udah bikin suasana kacau. Kalau kamu mau marah, marahin aku sepuasnya waktu kamu udah siap. Aku janji bakal dengerin semuanya.
+          </div>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+          <button onclick="toggleCard('card2', 'icon2')" class="w-full p-3.5 flex items-center justify-between text-left text-xs font-semibold text-purple-200 active:bg-white/10">
+            <span class="flex items-center gap-2">
+              <span>🥺</span>
+              <span>Buka kalau kamu ngerasa 'kurang' atau overthinking</span>
+            </span>
+            <span id="icon2" class="text-purple-300 text-xs">▼</span>
+          </button>
+          <div id="card2" class="hidden px-4 pb-4 text-xs text-slate-200/90 leading-relaxed border-t border-white/5 pt-2">
+            Tolong jangan pernah mikir usahamu kurang atau kamu yang gak cukup baik ya. Semua keraguan kemarin murni ketakutanku sendiri yang belum dewasa. Kamu udah sangat luar biasa dan aku bangga banget punya kamu.
+          </div>
+        </div>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+          <button onclick="toggleCard('card3', 'icon3')" class="w-full p-3.5 flex items-center justify-between text-left text-xs font-semibold text-emerald-200 active:bg-white/10">
+            <span class="flex items-center gap-2">
+              <span>🐰</span>
+              <span>Buka kalau suatu saat kamu udah mau ngobrol lagi</span>
+            </span>
+            <span id="icon3" class="text-purple-300 text-xs">▼</span>
+          </button>
+          <div id="card3" class="hidden px-4 pb-4 text-xs text-slate-200/90 leading-relaxed border-t border-white/5 pt-2">
+            Kapanpun kamu siap—hari ini, besok, atau lusa—pintu chat kamu selalu terbuka lebar. Sapa satu huruf atau kirim stiker satu biji aja udah lebih dari cukup. Aku bakal selalu ada di sana buat kamu.
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 2: PUPUT CANTIK BANGET! (VIBRANT, PLAYFUL & ADORABLE) -->
+    <!-- ======================================================== -->
+    <div id="beautyTab" class="hidden w-full flex flex-col gap-6">
+
+      <!-- Header Spesial Pujian -->
+      <section class="text-center pt-2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500/30 to-rose-500/30 border border-pink-300/40 text-[11px] font-bold text-pink-200 mb-2 shadow-sm animate-pulse">
+          <span>💖</span> PENGINGAT PALING PENTING HARI INI <span>💖</span>
+        </div>
+        <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 via-rose-300 to-amber-200">
+          Puput Itu Cantik Banget! 🌸✨
+        </h1>
+        <p class="text-xs text-pink-200/80 max-w-xs mx-auto mt-1 leading-relaxed">
+          Biar kamu nggak pernah lupa kalau kamu itu orang paling manis, tercantik, dan paling gemesin di mataku!
+        </p>
+      </section>
+
+      <!-- FEATURE 1: KACA AJAIB INTERAKTIF (MAGIC MIRROR) -->
+      <section class="bg-gradient-to-b from-pink-950/40 via-purple-950/30 to-black/40 border-2 border-pink-400/40 rounded-3xl p-5 shadow-2xl text-center relative overflow-hidden glow-rose">
+        <div class="absolute -top-6 -right-6 w-20 h-20 bg-pink-500/20 rounded-full blur-xl pointer-events-none"></div>
+
+        <p class="text-[11px] font-bold uppercase tracking-wider text-pink-300 mb-2">
+          🪞 Kaca Ajaib Penilai Kejujuran 🪞
+        </p>
+
+        <!-- Bingkai Cermin Ajaib -->
+        <div id="magicMirrorBox" onclick="triggerMirrorReact()" class="cursor-pointer mx-auto w-36 h-36 rounded-full bg-gradient-to-tr from-pink-300/20 via-purple-300/30 to-rose-200/40 border-4 border-pink-300/70 shadow-inner flex flex-col items-center justify-center relative active:scale-95 transition-all duration-300 group">
+          
+          <!-- Maskot Kelinci di Cermin -->
+          <div class="text-4xl filter drop-shadow group-hover:scale-110 transition duration-300">
+            🐰
+          </div>
+          <span class="text-[10px] font-bold text-pink-100 bg-pink-600/70 px-2 py-0.5 rounded-full mt-1 shadow">
+            Sentuh Kaca!
+          </span>
+
+          <!-- Animasi Hati Memancar -->
+          <div id="mirrorHearts" class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-0 transition-opacity duration-300">
+            <span class="text-2xl animate-ping">💖</span>
+          </div>
+        </div>
+
+        <div class="mt-3.5 bg-black/30 backdrop-blur-sm p-3 rounded-2xl border border-white/10">
+          <p class="text-[11px] text-pink-300 italic font-serifText">"Kaca ajaib, siapa cewek paling cantik dan manis?"</p>
+          <p id="mirrorAnswer" class="text-xs font-bold text-amber-200 mt-1 font-heading">
+            ✨ Jelas Puput lah, gak ada saingannya di bumi! 👑
+          </p>
+        </div>
+      </section>
+
+      <!-- FEATURE 2: METERAN TINGKAT KECANTIKAN PUPUT (OVERLOAD!) -->
+      <section class="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-5 shadow-xl text-center relative overflow-hidden">
+        <div class="flex items-center justify-center gap-1.5 text-xs font-bold text-pink-300 uppercase tracking-wider mb-1">
+          <span>⚡</span> Scanner Tingkat Kecantikan Puput <span>⚡</span>
+        </div>
+        <p class="text-[11px] text-slate-300/80 mb-3">
+          Coba kita scan tingkat kecantikan kamu hari ini yuk:
+        </p>
+
+        <!-- Progress Bar Gauge -->
+        <div class="w-full bg-black/40 rounded-full h-6 p-1 border border-pink-300/30 relative overflow-hidden mb-3">
+          <div id="beautyMeterBar" class="h-full rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-amber-300 transition-all duration-700 w-0 flex items-center justify-end pr-2 text-[10px] font-bold text-white shadow-lg">
+            <span id="meterPercentText">0%</span>
+          </div>
+        </div>
+
+        <!-- Tombol Scan -->
+        <button id="btnScanBeauty" onclick="scanBeautyMeter()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 active:scale-95 text-xs font-bold text-white shadow-lg flex items-center justify-center gap-2 transition">
+          <span>🔍</span>
+          <span id="scanBtnText">Mulai Scan Kecantikan Puput!</span>
+        </button>
+
+        <!-- Kotak Hasil Error Overload -->
+        <div id="meterAlertBox" class="hidden mt-3 p-3 rounded-xl bg-rose-500/20 border border-rose-400/50 text-left pop-in">
+          <div class="flex items-center gap-2 text-rose-300 font-bold text-xs">
+            <span class="text-base animate-spin">🚨</span>
+            <span>SYSTEM OVERLOAD ERROR: 999999999%</span>
+          </div>
+          <p class="text-[11px] text-pink-100 mt-1 leading-relaxed">
+            Mesin detector meledak! Kecantikan Puput udah kelewatan batas maksimum semesta! Nggak ada angka yang sanggup ngukurnya! 💖👑
+          </p>
+        </div>
+      </section>
+
+      <!-- FEATURE 3: GENERATOR PUJIAN TANPA BATAS -->
+      <section class="bg-gradient-to-b from-purple-950/30 to-pink-950/40 border border-pink-300/30 rounded-3xl p-5 shadow-xl text-center relative overflow-hidden">
+        <div class="flex items-center justify-center gap-1.5 text-xs font-bold text-pink-300 uppercase tracking-wider mb-1">
+          <span>💌</span> Kotak Pujian Tanpa Batas <span>💌</span>
+        </div>
+        <p class="text-[11px] text-slate-300/80 mb-3">
+          Tekan tombol di bawah kapan aja kamu butuh pengingat betapa manisnya kamu:
+        </p>
+
+        <!-- Tombol Generator -->
+        <button onclick="generateCompliment()" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:opacity-95 active:scale-95 text-xs font-bold text-white shadow-xl flex items-center justify-center gap-2 transition mb-3">
+          <span class="text-base">🌸</span>
+          <span>Dengerin Pujian Baru Buat Puput ✨</span>
+        </button>
+
+        <!-- Kartu Pujian yang Muncul Berubah-ubah -->
+        <div id="complimentCard" class="bg-white/10 backdrop-blur-md border border-pink-300/40 rounded-2xl p-4 text-center pop-in glow-rose">
+          <div class="text-2xl mb-1" id="complimentEmoji">🥰</div>
+          <p id="complimentText" class="text-xs sm:text-sm font-bold text-pink-100 leading-relaxed font-body">
+            "Senyuman kamu itu definisi paling manis, sekali senyum bisa langsung bikin adem seluruh isi dunia."
+          </p>
+          <span id="complimentCount" class="inline-block mt-2 text-[10px] text-pink-300/80 bg-pink-950/50 px-2 py-0.5 rounded-full font-mono">
+            Pujian #1
+          </span>
+        </div>
+      </section>
+
+      <!-- FEATURE 4: 4 KARTU "KENAPA KAMU SECANTIK ITU?" -->
+      <section class="space-y-2.5">
+        <div class="text-center">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-pink-200 font-heading">
+            Kenapa Sih Kamu Bisa Secantik Itu? 👑
+          </h2>
+          <p class="text-[11px] text-purple-200/70">Sentuh kartu buat lihat rahasianya:</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <!-- 1. Senyum Manis -->
+          <div onclick="toggleBeautySecret(1)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] border border-pink-300/20 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">😊</span>
+              <h3 class="text-xs font-bold text-pink-200">Senyuman & Tawamu</h3>
+            </div>
+            <p id="secret1" class="hidden text-[11px] text-pink-100 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Gak ada yang bisa ngalahin manisnya senyum kamu. Apalagi kalau kamu lagi ketawa lepas, auranya bener-bener bikin orang betah ngelihatnya.
+            </p>
+          </div>
+
+          <!-- 2. Cantik Alami -->
+          <div onclick="toggleBeautySecret(2)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] border border-pink-300/20 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">✨</span>
+              <h3 class="text-xs font-bold text-rose-200">Cantik Apa Adanya</h3>
+            </div>
+            <p id="secret2" class="hidden text-[11px] text-pink-100 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Gak perlu dandan ribet, Puput pakai baju santai atau baru bangun tidur aja udah kelihatan cantik dan lucu banget!
+            </p>
+          </div>
+
+          <!-- 3. Pas Lagi Ngambek -->
+          <div onclick="toggleBeautySecret(3)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] border border-pink-300/20 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🐰</span>
+              <h3 class="text-xs font-bold text-amber-200">Bahkan Pas Cemberut</h3>
+            </div>
+            <p id="secret3" class="hidden text-[11px] text-pink-100 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Jujur ya, pas kamu lagi ngambek atau manyun pun, di mataku kamu tetep kelihatan gemesin banget kayak anak kelinci!
+            </p>
+          </div>
+
+          <!-- 4. Hati yang Cantik -->
+          <div onclick="toggleBeautySecret(4)" class="bg-white/5 hover:bg-white/10 active:scale-[0.98] border border-pink-300/20 rounded-2xl p-3.5 cursor-pointer transition">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">💖</span>
+              <h3 class="text-xs font-bold text-emerald-200">Cantik Hati & Perhatiannya</h3>
+            </div>
+            <p id="secret4" class="hidden text-[11px] text-pink-100 leading-relaxed mt-2 pt-2 border-t border-white/10">
+              Yang bikin kamu berkali-kali lipat makin cantik adalah hatimu yang lembut, caramu peduli, dan ketulusanmu yang gak pernah dibuat-buat.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOMBOL HUJAN KELOPAK BUNGA (CANVAS TRIGGER) -->
+      <section class="text-center pt-1 pb-3">
+        <button onclick="triggerFlowerRainBurst()" class="py-2.5 px-5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-pink-300/40 text-xs font-bold text-pink-200 flex items-center justify-center gap-2 mx-auto shadow-lg transition">
+          <span>🌸</span>
+          <span>Hujani Layar dengan Bunga & Cinta!</span>
+          <span>💖</span>
+        </button>
+      </section>
+
+    </div>
+
+    <!-- FOOTER UNIVERSAL (ZERO PRESSURE) -->
+    <footer class="text-center pt-3 pb-6 space-y-1.5 border-t border-white/5">
+      <div class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-purple-200/80">
+        <span>🤍</span>
+        <span>Take as much time as you need, Puput.</span>
+      </div>
+      <p class="text-[10px] text-slate-500">
+        Sentuh layar di mana saja untuk memancarkan kilau bintang ✨
+      </p>
+    </footer>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT: LOGIKA MULTI-TAB, AUDIO & ANIMASI PARTICLES -->
+  <!-- ======================================================== -->
+  <script>
+    // 1. SISTEM GANTI TAB (SMOOTH TAB SWITCHING)
+    function switchTab(tabId) {
+      const tab1 = document.getElementById('letterTab');
+      const tab2 = document.getElementById('beautyTab');
+      const btn1 = document.getElementById('tabBtn1');
+      const btn2 = document.getElementById('tabBtn2');
+
+      if (tabId === 'letterTab') {
+        tab1.classList.remove('hidden');
+        tab2.classList.add('hidden');
+
+        btn1.className = "flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg";
+        btn2.className = "flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 text-purple-200 hover:text-white hover:bg-white/5 relative";
+        playSingleChime(587.33);
+      } else {
+        tab1.classList.add('hidden');
+        tab2.classList.remove('hidden');
+
+        btn2.className = "flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-pink-500 to-rose-600 text-white shadow-lg relative";
+        btn1.className = "flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-1.5 text-purple-200 hover:text-white hover:bg-white/5";
+        
+        playSingleChime(783.99);
+        triggerFlowerRainBurst();
+      }
+    }
+
+    // 2. EFEK SENTUHAN SPARKLE DI SELURUH LAYAR
+    window.addEventListener('pointerdown', (e) => {
+      spawnSparkle(e.clientX, e.clientY);
+    });
+
+    function spawnSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'touch-sparkle';
+      const items = ['✨', '⭐', '🤍', '🌸', '💖', '💫'];
+      sparkle.innerText = items[Math.floor(Math.random() * items.length)];
+      sparkle.style.fontSize = (Math.random() * 8 + 14) + 'px';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 850);
+    }
+
+    // 3. TAB 1: LOGIKA SURAT & ACCORDION
+    function toggleLetter() {
+      const letter = document.getElementById('letterBody');
+      const closedView = document.getElementById('envelopeClosedView');
+      const openView = document.getElementById('envelopeOpenView');
+
+      if (letter.classList.contains('hidden')) {
+        letter.classList.remove('hidden');
+        closedView.classList.add('hidden');
+        openView.classList.remove('hidden');
+        playSingleChime(659.25);
+        setTimeout(() => playSingleChime(783.99), 120);
+      } else {
+        letter.classList.add('hidden');
+        closedView.classList.remove('hidden');
+        openView.classList.add('hidden');
+      }
+    }
+
+    function toggleReason(num) {
+      const el = document.getElementById('reasonText' + num);
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        playSingleChime(587.33);
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+
+    function toggleCard(cardId, iconId) {
+      const card = document.getElementById(cardId);
+      const icon = document.getElementById(iconId);
+
+      if (card.classList.contains('hidden')) {
+        card.classList.remove('hidden');
+        icon.innerText = '▲';
+        playSingleChime(523.25);
+      } else {
+        card.classList.add('hidden');
+        icon.innerText = '▼';
+      }
+    }
+
+    // 4. TAB 2: INTERAKSI KACA AJAIB (MAGIC MIRROR)
+    const mirrorQuotes = [
+      "✨ Jelas Puput lah, gak ada saingannya di bumi! 👑",
+      "💖 Yang lagi baca layar ini nih, manisnya kelewatan!",
+      "🌸 Kaca ajaib sampai silau saking cantiknya Puput!",
+      "🐰 Kelinci aja ngakuin, Puput nomor satu paling gemesin!",
+      "✨ Cantik luar dalam, senyumnya bikin candu!"
+    ];
+    let mirrorIdx = 0;
+
+    function triggerMirrorReact() {
+      const mirrorHearts = document.getElementById('mirrorHearts');
+      const answer = document.getElementById('mirrorAnswer');
+      
+      mirrorHearts.style.opacity = '1';
+      setTimeout(() => { mirrorHearts.style.opacity = '0'; }, 600);
+
+      mirrorIdx = (mirrorIdx + 1) % mirrorQuotes.length;
+      answer.innerText = mirrorQuotes[mirrorIdx];
+
+      playSingleChime(880.00);
+      setTimeout(() => playSingleChime(1046.50), 100);
+      triggerFlowerRainBurst();
+    }
+
+    // 5. TAB 2: SCANNER METERAN KECANTIKAN (OVERLOAD!)
+    let isScanning = false;
+    function scanBeautyMeter() {
+      if (isScanning) return;
+      isScanning = true;
+
+      const meterBar = document.getElementById('beautyMeterBar');
+      const meterText = document.getElementById('meterPercentText');
+      const alertBox = document.getElementById('meterAlertBox');
+      const scanBtnText = document.getElementById('scanBtnText');
+
+      alertBox.classList.add('hidden');
+      scanBtnText.innerText = "Sedang Menghitung Keindahan...";
+      meterBar.style.width = '0%';
+      meterText.innerText = '0%';
+
+      let progress = 0;
+      const scanInterval = setInterval(() => {
+        progress += 8;
+        if (progress <= 100) {
+          meterBar.style.width = progress + '%';
+          meterText.innerText = progress + '%';
+          playSingleChime(400 + progress * 4);
+        } else {
+          clearInterval(scanInterval);
+          meterBar.style.width = '100%';
+          meterText.innerText = 'OVERLOAD!';
+          
+          // Efek Getar & Alarm Bunyi Lembut
+          document.getElementById('beautyTab').classList.add('shake-alarm');
+          setTimeout(() => {
+            document.getElementById('beautyTab').classList.remove('shake-alarm');
+          }, 600);
+
+          alertBox.classList.remove('hidden');
+          scanBtnText.innerText = "Scan Ulang Lagi! 💖";
+          isScanning = false;
+
+          playSingleChime(1046.50);
+          setTimeout(() => playSingleChime(1318.51), 120);
+          triggerFlowerRainBurst();
+        }
+      }, 70);
+    }
+
+    // 6. TAB 2: GENERATOR PUJIAN TANPA BATAS
+    const compliments = [
+      { text: "Senyuman kamu itu definisi paling manis, sekali senyum bisa langsung bikin adem seluruh isi dunia.", emoji: "🥰" },
+      { text: "Bahkan pas lagi cemberut atau ngambek aja, kamu tetep kelihatan lucu dan gemesin banget.", emoji: "🐰" },
+      { text: "Matamu itu indah banget, selalu punya binar tulus yang bikin orang nyaman mandangnya.", emoji: "✨" },
+      { text: "Kecantikanmu bukan cuma di paras, tapi di caramu selalu peduli dan memperlakukan orang lain dengan hangat.", emoji: "🌸" },
+      { text: "Gak butuh filter apa-apa, muka natural kamu pas lagi ketawa lepas itu yang paling juara.", emoji: "💖" },
+      { text: "Di antara miliaran orang di bumi, kamu selalu jadi yang paling bersinar dan paling spesial di mataku.", emoji: "👑" },
+      { text: "Puput pas bangun tidur atau pas lagi santai aja cantiknya udah kelewatan!", emoji: "🌙" },
+      { text: "Suaramu pas lagi cerita antusias itu manis banget, bikin gak pernah bosen dengerinnya.", emoji: "💫" },
+      { text: "Kamu itu paket lengkap: manis, baik hati, sabar, dan selalu punya tempat paling istimewa.", emoji: "🤍" }
+    ];
+    let compIdx = 0;
+    let compCount = 1;
+
+    function generateCompliment() {
+      compIdx = (compIdx + 1) % compliments.length;
+      compCount++;
+
+      const card = document.getElementById('complimentCard');
+      const text = document.getElementById('complimentText');
+      const emoji = document.getElementById('complimentEmoji');
+      const count = document.getElementById('complimentCount');
+
+      card.classList.remove('pop-in');
+      void card.offsetWidth; // reset animasi
+      card.classList.add('pop-in');
+
+      text.innerText = `"${compliments[compIdx].text}"`;
+      emoji.innerText = compliments[compIdx].emoji;
+      count.innerText = `Pujian #${compCount}`;
+
+      playSingleChime(659.25);
+      setTimeout(() => playSingleChime(880.00), 100);
+    }
+
+    function toggleBeautySecret(num) {
+      const el = document.getElementById('secret' + num);
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        playSingleChime(659.25);
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+
+    // 7. WIDGET NAPAS SEJENAK (12 DETIK LOOP)
+    const breathMainWord = document.getElementById('breathMainWord');
+    const breathSubWord = document.getElementById('breathSubWord');
+
+    function runBreathingGuide() {
+      breathMainWord.innerText = "Tarik Napas";
+      breathSubWord.innerText = "Tarik napas perlahan lewat hidung...";
+
+      setTimeout(() => {
+        breathMainWord.innerText = "Tahan...";
+        breathSubWord.innerText = "Rasakan ketenangan di dalam dada...";
+      }, 4000);
+
+      setTimeout(() => {
+        breathMainWord.innerText = "Hembuskan";
+        breathSubWord.innerText = "Lepaskan semua beban dan rasa cemas...";
+      }, 8000);
+    }
+    runBreathingGuide();
+    setInterval(runBreathingGuide, 12000);
+
+    // 8. CANVAS: HUJAN KELOPAK BUNGA SAKURA & HATI
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const particleTypes = ['sakura', 'heart', 'sparkle'];
+
+    function createParticle(burst = false) {
+      return {
+        x: burst ? width / 2 + (Math.random() * 200 - 100) : Math.random() * width,
+        y: burst ? height / 2 + (Math.random() * 200 - 100) : -20,
+        size: Math.random() * 9 + 8,
+        speedY: burst ? Math.random() * 3 + 1.5 : Math.random() * 1.5 + 0.8,
+        speedX: Math.random() * 1.6 - 0.8,
+        angle: Math.random() * 360,
+        spin: Math.random() * 2 - 1,
+        type: particleTypes[Math.floor(Math.random() * particleTypes.length)],
+        opacity: Math.random() * 0.6 + 0.4
+      };
+    }
+
+    // Inisialisasi partikel awal yang mengalir santai
+    for (let i = 0; i < 22; i++) {
+      const p = createParticle();
+      p.y = Math.random() * height;
+      particles.push(p);
+    }
+
+    function triggerFlowerRainBurst() {
+      for (let i = 0; i < 25; i++) {
+        particles.push(createParticle(true));
+      }
+    }
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.y += p.speedY;
+        p.x += p.speedX;
+        p.angle += p.spin;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.angle * Math.PI) / 180);
+        ctx.globalAlpha = p.opacity;
+
+        if (p.type === 'sakura') {
+          // Gambar kelopak sakura lembut
+          ctx.fillStyle = '#F472B6';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.size / 2, p.size, 0, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.type === 'heart') {
+          ctx.fillStyle = '#FB7185';
+          ctx.font = `${p.size}px sans-serif`;
+          ctx.fillText('💖', -p.size / 2, p.size / 2);
+        } else {
+          ctx.fillStyle = '#FDE047';
+          ctx.font = `${p.size}px sans-serif`;
+          ctx.fillText('✨', -p.size / 2, p.size / 2);
+        }
+
+        ctx.restore();
+
+        // Daur ulang partikel
+        if (p.y > height + 30) {
+          particles[i] = createParticle();
+        }
+      }
+
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    // 9. BINTANG LATAR STATIS
+    function initStarField() {
+      const field = document.getElementById('starField');
+      for (let i = 0; i < 35; i++) {
+        const s = document.createElement('div');
+        s.className = 'star-bg';
+        const sz = Math.random() * 2 + 1;
+        s.style.width = sz + 'px';
+        s.style.height = sz + 'px';
+        s.style.top = Math.random() * 100 + '%';
+        s.style.left = Math.random() * 100 + '%';
+        s.style.setProperty('--twinkle-dur', (Math.random() * 3 + 2.5) + 's');
+        s.style.animationDelay = (Math.random() * 3) + 's';
+        field.appendChild(s);
+      }
+    }
+    initStarField();
+
+    // 10. WEB AUDIO API: SYNTHESIZER KOTAK KACA
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let isPlaying = false;
+    let musicTimer = null;
+
+    const lullabyNotes = [
+      523.25, 659.25, 783.99, 659.25,
+      587.33, 659.25, 880.00, 783.99,
+      659.25, 783.99, 1046.50, 783.99,
+      880.00, 783.99, 659.25, 587.33
+    ];
+    let nIdx = 0;
+
+    function playBellSound(freq, gainAmount = 0.08) {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(gainAmount, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 1.8);
+    }
+
+    function playSingleChime(freq) {
+      try {
+        playBellSound(freq, 0.05);
+      } catch (e) {}
+    }
+
+    function toggleMusic() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      const btn = document.getElementById('btnMusic');
+      const icon = document.getElementById('musicIcon');
+      const label = document.getElementById('musicStatusText');
+
+      if (!isPlaying) {
+        isPlaying = true;
+        icon.innerText = '⏸️';
+        label.innerText = 'Heningkan';
+        btn.classList.add('bg-pink-500/30', 'border-pink-300');
+
+        musicTimer = setInterval(() => {
+          playBellSound(lullabyNotes[nIdx], 0.07);
+          nIdx = (nIdx + 1) % lullabyNotes.length;
+        }, 900);
+      } else {
+        isPlaying = false;
+        clearInterval(musicTimer);
+        icon.innerText = '🎵';
+        label.innerText = 'Kotak Kaca';
+        btn.classList.remove('bg-pink-500/30', 'border-pink-300');
+      }
+    }
+  </script>
+</body>
+</html>
